@@ -1,63 +1,75 @@
-# Practical lesson pz-MQTT  
-# Розгортання та налаштування MQTT-брокера  
+# Practical lesson pz-MQTT
+# Розгортання та налаштування MQTT-брокера
 
-> У цьому занятті студенти отримують практичні навички роботи з MQTT-брокером.  
-> Мета — навчитися розгортати брокер,та обмін повідомленнями за допомогою публікації/підписки.
-
----
-
-## What need to do:
-* Розгорнути MQTT-брокер (Mosquitto / EMQX / HiveMQ)
-* Налаштувати базову конфігурацію сервісу  
-* Ознайомитись із принципами роботи MQTT-протоколу  
-* Виконати публікацію та підписку на MQTT-топіки через Postman або інший MQTT-клієнт  
-* Перевірити працездатність сервісу через інструменти тестування  
+> Розгортання MQTT-брокера EMQX у Docker та тестування через Postman.
 
 ---
 
-## Acceptance criteria
-* Студент розгорнув MQTT-брокер або локально / у Docker  
-* Мінімальна конфігурація працює стабільно  
-* Студент розуміє основні поняття MQTT:
-  * Topic  
-  * Publish  
-  * Subscribe  
-  * QoS  
-* Виконано демонстрацію Publish/Subscribe через Postman або інший клієнт  
-* Усі команди, налаштування та тести описані в README.md  
-* Надано скріншоти або лог дії Publish/Subscribe (за потреби)  
-* Завдання оформлене відповідно до структури проєкту  
+## Що таке MQTT
+
+MQTT — легкий протокол обміну повідомленнями за моделлю публікація/підписка.
+
+Основні поняття:
+
+- **Broker** — сервер який передає повідомлення між клієнтами
+- **Topic** — назва каналу, наприклад `home/temperature`
+- **Publish** — надіслати повідомлення в топік
+- **Subscribe** — підписатись на топік щоб отримувати повідомлення
+- **QoS** — рівень гарантії доставки (0, 1, 2)
 
 ---
 
-## Getting started
+## Структура
 
+```
+├── broker
+│   └── docker-compose.yml
+├── screenshots
+├── .editorconfig
+├── .gitignore
+└── README.md
+```
+
+---
+
+## Запуск
 
 ```bash
-docker compose up
-
+cd broker
+docker compose up -d
 ```
 
-```
-├── stt-pz-3
-│   ├── broker
-│   │   ├── <mqtt>.conf     # конфігурація MQTT (якщо застосовується)
-│   │   ├── docker-compose.yml # варіант розгортання брокера
-│   ├── screenshots            # докази роботи Publish/Subscribe або Gateway routes
-│   ├── .editorconfig
-│   ├── .gitignore
-│   ├── README.md
-└──
+Порти:
+- `1883` — MQTT
+- `8083` — WebSocket
+- `18083` — веб-панель керування (логін: `admin`, пароль: `public`)
 
+Зупинити:
+```bash
+docker compose down
 ```
-## Usfull links
 
-[MQTT Essentials](https://www.hivemq.com/mqtt-essentials/)
+---
+
+## Тестування в Postman
+
+1. New → MQTT
+2. URL: `mqtt://localhost:1883` → Connect
+3. Topics → додати `home/sensors` → Subscribe
+4. Message → текст повідомлення → Topic: `home/sensors` → Send
+
+Після надсилання повідомлення воно з'явиться у вкладці Messages.
+
+---
+
+## Скріншоти
+
+Скріншоти знаходяться в папці `screenshots/`.
+
+---
+
+## Useful links
 
 [EMQX Documentation](https://www.emqx.io/docs/en/latest/)
 
-[Eclipse Mosquitto](https://mosquitto.org/)
-
 [MQTT with Postman](https://learning.postman.com/docs/sending-mqtt-messages/intro-to-mqtt/)
-
-[NGINX API Gateway](https://docs.nginx.com/nginx/admin-guide/api-gateway/)
